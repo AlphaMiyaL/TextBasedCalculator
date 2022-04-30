@@ -1,3 +1,5 @@
+package AutomataIntepretations;
+import States.State;
 
 public class InterpretNumberFSM {
 	private State current;
