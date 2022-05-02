@@ -35,6 +35,14 @@ public class Types2Stack {
 		return temp;
 	}
 	
+	public String peek() {
+		return top.getStr();
+	}
+	
+	public double peek2() {
+		return top.getValue();
+	}
+	
 	public int getType() {
 		if(top.getStr()==null) {
 			return 1;

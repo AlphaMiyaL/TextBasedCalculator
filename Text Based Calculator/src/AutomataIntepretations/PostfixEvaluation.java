@@ -17,18 +17,22 @@ public class PostfixEvaluation {
 		while(true) {
 			switch(current) {
 				case Q0:
+					//Adding starting $ for end of stack
 					calcs.push("$");
 					current = PEState.Q1;
 					break;
 				case Q1:
+					// If string, then it is an operator or end of stack $
 					if(postfix.getType()==0) {
 						String popped = postfix.pop();
 						double val1;
 						double val2;
+						// Check if at least 2 nums exist in calcs stack
 						if(!calcs.nextTwoAreNums()) {
 							current = PEState.QDead;
 							break;
 						}
+						//pops two values from calcs stack and calculates before pushing back onto calc stack 
 						switch(popped.charAt(0)) {
 							case '*':
 								val1=calcs.pop2();																	
@@ -55,6 +59,7 @@ public class PostfixEvaluation {
 								break;
 						}
 					}
+					// If number, then push to calc stack
 					else {
 						calcs.push(postfix.pop2());
 					}

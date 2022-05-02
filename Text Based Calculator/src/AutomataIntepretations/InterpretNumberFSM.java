@@ -92,7 +92,7 @@ public class InterpretNumberFSM {
 		else {
 			result = result*Math.pow(10, e);
 		}
-		System.out.print(result);
+		//System.out.print(result);
 		return result;
 	}
 	
