@@ -4,7 +4,16 @@ public class Types2Node {
 	private String str;
 	private double value;
 	private Types2Node ref;
+	private Types2Node backRef;
 	
+	public Types2Node getBackRef() {
+		return backRef;
+	}
+
+	public void setBackRef(Types2Node backRef) {
+		this.backRef = backRef;
+	}
+
 	public Types2Node(String str) {
 		this.str=str;
 	}

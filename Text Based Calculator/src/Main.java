@@ -9,15 +9,17 @@ public class Main {
 		boolean exit = false;
 		
 		while(!exit) {
-			System.out.print("Input number(Accordance to the java literal document)[exit to stop program]: ");
+			System.out.print("Input numbers and expressions(Accordance to the java literal document)[exit to stop program]: ");
 			input = keyboard.nextLine();
-			if(input.equals("exit")) {
+			if(input.toLowerCase().equals("exit")) {
 				exit = !exit;
 				System.out.println("Exiting Program...");
 			}
 			else {			
-				InterpretNumberFSM interpreter = new InterpretNumberFSM(input);
-				interpreter.InterpretState();
+				double interpret = InterpretExpression.interpret(input);
+				if(interpret!=-1) {
+					System.out.println(interpret);
+				}
 			}
 			System.out.println();
 		}

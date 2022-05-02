@@ -10,7 +10,7 @@ public class InterpretNumberFSM {
 		this.str = str;
 	}
 	
-	public double InterpretState() {
+	public double interpretState() {
 		double result=0;
 		double decimal=0;
 		double e=0;

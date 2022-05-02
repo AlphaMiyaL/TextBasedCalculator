@@ -13,55 +13,57 @@ public class PostfixEvaluation {
 		calcs = new Types2Stack();
 	}
 	
-	public double EvaluationState() {
+	public double postfixEval() {
 		while(true) {
 			switch(current) {
 				case Q0:
 					//Adding starting $ for end of stack
 					calcs.push("$");
+					postfix.dequeue();
+					postfix.push("$");
 					current = PEState.Q1;
 					break;
 				case Q1:
 					// If string, then it is an operator or end of stack $
-					if(postfix.getType()==0) {
-						String popped = postfix.pop();
+					if(postfix.getBackType()==0) {
+						String popped = postfix.dequeue();
 						double val1;
 						double val2;
-						// Check if at least 2 nums exist in calcs stack
-						if(!calcs.nextTwoAreNums()) {
-							current = PEState.QDead;
-							break;
+						try{
+							switch(popped.charAt(0)) {
+								case '*':
+									val1=calcs.pop2();																	
+									val2=calcs.pop2();
+									calcs.push(val1*val2);
+									break;
+								case '/':
+									val1=calcs.pop2();																	
+									val2=calcs.pop2();
+									calcs.push(val2/val1);
+									break;
+								case '+':
+									val1=calcs.pop2();																	
+									val2=calcs.pop2();
+									calcs.push(val1+val2);
+									break;
+								case '-':
+									val1=calcs.pop2();																	
+									val2=calcs.pop2();
+									calcs.push(val2-val1);
+									break;
+								case '$':
+									current = PEState.Q2;
+									break;
+							}	
 						}
-						//pops two values from calcs stack and calculates before pushing back onto calc stack 
-						switch(popped.charAt(0)) {
-							case '*':
-								val1=calcs.pop2();																	
-								val2=calcs.pop2();
-								calcs.push(val1*val2);
-								break;
-							case '/':
-								val1=calcs.pop2();																	
-								val2=calcs.pop2();
-								calcs.push(val1/val2);
-								break;
-							case '+':
-								val1=calcs.pop2();																	
-								val2=calcs.pop2();
-								calcs.push(val1+val2);
-								break;
-							case '-':
-								val1=calcs.pop2();																	
-								val2=calcs.pop2();
-								calcs.push(val1-val2);
-								break;
-							case '$':
-								current = PEState.Q2;
-								break;
+						catch(Exception e) {
+							System.out.println("Error: Not enough numbers");
+							current = PEState.QDead;
 						}
 					}
 					// If number, then push to calc stack
 					else {
-						calcs.push(postfix.pop2());
+						calcs.push(postfix.dequeue2());
 					}
 					break;
 				case Q2:

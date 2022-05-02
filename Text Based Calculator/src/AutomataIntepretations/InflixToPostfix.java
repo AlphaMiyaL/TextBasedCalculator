@@ -16,7 +16,7 @@ public class InflixToPostfix {
 		opstack = new Types2Stack();
 	}
 	
-	public Types2Stack PostfixConversion() {
+	public Types2Stack postfixConversion() {
 		//setup string
 		str = "(" + str + ")";
 		for(int i=0; i<str.length(); i++) {
@@ -26,50 +26,32 @@ public class InflixToPostfix {
 					postfix.push("$");
 					opstack.push("$");
 					current = IPState.Q1;
+					i--;
 					break;
 				case Q1:
 					switch(str.charAt(i)) {
 						//Inteprets number from string using InterpretNumberFSM
 						case '0': case '1': case '2': case '3': case '4': case '5':case '6':case '7':case '8':case '9':
-							for(int j=i+1; j<str.length()-i-1; j++) {
-								switch(str.charAt(j)) {
-									case '(': case '*': case '/': case ')':
-										InterpretNumberFSM infsm = new InterpretNumberFSM(str.substring(i, j));
-										double num = infsm.InterpretState();
-										if(num==-1) {
-											current = IPState.QDead;
-										}
-										else {
-											postfix.push(num);
-										}
-										break;
-									case '+': case '-':
-										if(str.charAt(j-1)!='e' && str.charAt(j-1)!='E') {
-											InterpretNumberFSM infsm2 = new InterpretNumberFSM(str.substring(i, j));
-											double num2 = infsm2.InterpretState();
-											if(num2==-1) {
-												current = IPState.QDead;
-											}
-											else {
-												postfix.push(num2);
-											}
-										}
-										break;
-								}
-							}
+							i = interpretNumber(i);
 							break;
 						//If operator, pushes onto opstack
 						case '(': case '+': case '-': case '*': case '/':
-							opstack.push(str.charAt(i));
+							opstack.push(Character.toString(str.charAt(i)));
 							break;
 						//If closing parens, pop opstack until opening opstack is found
 						case ')':
+							if(opstack.peek().equals("$")){
+								break;
+							}
 							String temp = opstack.pop();
 							while(!temp.equals("(")) {
 								postfix.push(temp);
 								temp = opstack.pop();
 								//if stack end $ is reached, error out
-								System.out.println("Error: Opening parens does not match amount of closing parens");
+								if(temp.equals("$")) {
+									System.out.println("Error: Opening parens does not match amount of closing parens");
+									return null;
+								}
 							}
 							break;
 					}
@@ -82,5 +64,36 @@ public class InflixToPostfix {
 			return null;
 		}
 		return postfix;
+	}
+	
+	public int interpretNumber(int i){
+		for(int j=i; j<str.length(); j++) {
+			switch(str.charAt(j)) {
+				case '(': case '*': case '/': case ')':
+					InterpretNumberFSM infsm = new InterpretNumberFSM(str.substring(i, j));
+					double num = infsm.interpretState();
+					if(num==-1) {
+						current = IPState.QDead;
+					}
+					else {
+						postfix.push(num);
+					}
+					return (j-1);
+				case '+': case '-':
+					if(str.charAt(j-1)!='e' && str.charAt(j-1)!='E') {
+						InterpretNumberFSM infsm2 = new InterpretNumberFSM(str.substring(i, j));
+						double num2 = infsm2.interpretState();
+						if(num2==-1) {
+							current = IPState.QDead;
+						}
+						else {
+							postfix.push(num2);
+						}
+						return (j-1);
+					}
+					break;
+			}
+		}
+		return i;
 	}
 }
